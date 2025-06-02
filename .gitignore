@@ -1,0 +1,10 @@
+# Node.js modules
+node_modules/
+
+# Environment variable files
+
+# Logs
+logs
+error.log
+app.log
+logs/
