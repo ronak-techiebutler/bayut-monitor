@@ -1,5 +1,4 @@
 name: Deploy to EC2
-
 on:
   push:
     branches:
@@ -9,19 +8,21 @@ jobs:
   deploy:
     name: Deploy via SSH
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
+        
       - name: Deploy to EC2 server
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
+            source ~/.bashrc
+            source ~/.nvm/nvm.sh
             cd /home/ubuntu/.ssh/bayut-monitor
             git pull origin main
             npm install
