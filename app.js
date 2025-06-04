@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 
 //Schedule to run every day at 12:00 AM UTC
 cron.schedule(
-  "40 14 * * *",
+  "15 15 * * *",
   async () => {
     console.log("⏰ Running daily monitor at 11:40 AM UTC...");
     const urls = parseSitemap();
