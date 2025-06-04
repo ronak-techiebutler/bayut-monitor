@@ -34,7 +34,7 @@ export const runMonitor = async (urlArray) => {
     for (const pageUrl of urlArray) {
       console.log("🌐 Crawling:", pageUrl);
 
-      const { html: newHtml, localStorage, links } = await crawlPage(pageUrl);
+      const { html: newHtml, links } = await crawlPage(pageUrl);
       const seoFields = extractSEOFields(newHtml);
       const techMetrics = await getTechnicalMetrics(pageUrl);
       const {
@@ -44,14 +44,6 @@ export const runMonitor = async (urlArray) => {
         robotsTxt,
         robotsStatus,
       } = await checkSitemapAndRobots();
-
-      const experiments = Object.keys(localStorage).some(
-        (k) =>
-          k.toLowerCase().includes("experiment") ||
-          k.toLowerCase().includes("variant")
-      )
-        ? ["Found experiment keys in localStorage."]
-        : [];
 
       const currentSnapshot = {
         seoSnapshot: { ...seoFields },
@@ -70,7 +62,6 @@ export const runMonitor = async (urlArray) => {
         internalLinks: {
           total: links.length,
         },
-        experimentsDetected: experiments,
       };
 
       const previousCrawl = await Models.crawl
