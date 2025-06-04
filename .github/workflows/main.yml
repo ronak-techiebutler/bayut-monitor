@@ -22,7 +22,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /home/ubuntu/bayut-monitor
+            cd /home/ubuntu/.ssh/bayut-monitor
             git pull origin main
             npm install
             pm2 reload ecosystem.config.cjs
