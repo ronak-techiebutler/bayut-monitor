@@ -20,7 +20,7 @@ const printer = new PdfPrinter(fonts);
 export function generateConsolidatedPDFReport(diffsByUrl, outputFile) {
   const content = [];
 
-  content.push({ text: "Consolidated Change Report", style: "header" });
+  content.push({ text: "Report", style: "header" });
 
   for (const [url, diff] of Object.entries(diffsByUrl)) {
     content.push({
