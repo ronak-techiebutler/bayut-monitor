@@ -11,13 +11,9 @@ app.get("/", (req, res) => {
   res.json({ message: "Bayut-monitor is good to go" });
 });
 
-cron.schedule("* * * * *", () => {
-  console.log("🔥 Test: cron running every minute");
-});
-
 //Schedule to run every day at 12:00 AM UTC
 cron.schedule(
-  "50 11 * * *",
+  "20 12 * * *",
   async () => {
     console.log("⏰ Running daily monitor at 11:40 AM UTC...");
     const urls = parseSitemap();
