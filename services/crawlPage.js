@@ -1,8 +1,7 @@
-import puppeteer from "puppeteer";
-
+import { chromium } from "playwright";
 export const crawlPage = async (url) => {
   try {
-    const browser = await puppeteer.launch({
+    const browser = await chromium.launch({
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
