@@ -1,5 +1,5 @@
-import fs from "fs";
 import path from "path";
+import fs from "fs";
 import dotenv from "dotenv";
 import _ from "lodash";
 
@@ -12,14 +12,24 @@ import { extractSEOFields } from "./detectSEOChanges.js"; // renamed function
 import { sendDigest } from "./sendDigest.js";
 import connectDB from "../config/connectDB.js";
 import Models from "../models/index.js";
+import { generateConsolidatedPDFReport } from "./createChangeReportPDF.js";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const runMonitor = async (urlArray) => {
   try {
     console.log("🔄 Running monitor");
 
     await connectDB();
+    const timestamp = new Date();
+    const reportsDir = path.join(__dirname, "../reports");
+    if (!fs.existsSync(reportsDir)) {
+      fs.mkdirSync(reportsDir, { recursive: true });
+    }
 
-    const crawlDataObject = {};
+    const allDiffs = {};
 
     for (const pageUrl of urlArray) {
       console.log("🌐 Crawling:", pageUrl);
@@ -35,18 +45,15 @@ export const runMonitor = async (urlArray) => {
         robotsStatus,
       } = await checkSitemapAndRobots();
 
-      const experiments = [];
-      if (
-        Object.keys(localStorage).some(
-          (k) =>
-            k.toLowerCase().includes("experiment") ||
-            k.toLowerCase().includes("variant")
-        )
-      ) {
-        experiments.push("Found experiment keys in localStorage.");
-      }
+      const experiments = Object.keys(localStorage).some(
+        (k) =>
+          k.toLowerCase().includes("experiment") ||
+          k.toLowerCase().includes("variant")
+      )
+        ? ["Found experiment keys in localStorage."]
+        : [];
 
-      crawlDataObject[pageUrl] = {
+      const currentSnapshot = {
         seoSnapshot: { ...seoFields },
         technicalMetrics: {
           TTFB: +(techMetrics.TTFB / 1000).toFixed(2),
@@ -57,59 +64,87 @@ export const runMonitor = async (urlArray) => {
           sitemapAvailable,
           sitemapStatus,
           sitemapUrls,
-          robotsTxt: robotsTxt.slice(0, 1000),
+          robotsTxt: robotsTxt?.slice(0, 1000),
           robotsStatus,
         },
         internalLinks: {
           total: links.length,
-          links,
         },
         experimentsDetected: experiments,
-        localStorage,
       };
 
       const previousCrawl = await Models.crawl
-        .findOne({})
+        .findOne({ url: pageUrl })
         .sort({ timestamp: -1 });
+      const previousData = previousCrawl?.data;
 
-      const previousData = previousCrawl?.data?.[pageUrl];
-      const currentData = crawlDataObject[pageUrl];
-
-      if (previousData) {
-        const diff = {};
-
-        for (const key of Object.keys(currentData)) {
-          if (!_.isEqual(currentData[key], previousData[key])) {
-            diff[key] = {
-              before: previousData[key],
-              after: currentData[key],
-            };
+      function getChangedFields(prev, curr) {
+        const changes = {};
+        for (const key in curr) {
+          if (!_.isEqual(curr[key], prev?.[key])) {
+            if (
+              typeof curr[key] === "object" &&
+              curr[key] !== null &&
+              !Array.isArray(curr[key])
+            ) {
+              const nestedChanges = getChangedFields(
+                prev?.[key] || {},
+                curr[key]
+              );
+              if (Object.keys(nestedChanges).length > 0) {
+                changes[key] = nestedChanges;
+              }
+            } else {
+              changes[key] = {
+                before: prev?.[key],
+                after: curr[key],
+              };
+            }
           }
         }
+        return changes;
+      }
+
+      let diff = {};
+      if (previousData) {
+        diff = getChangedFields(previousData, currentSnapshot);
 
         if (Object.keys(diff).length > 0) {
           console.log("🔍 Changes detected for:", pageUrl);
-          console.dir(diff, { depth: null });
+          allDiffs[pageUrl] = diff;
 
-          // Optional: Save to DB, sendDigest(), etc.
           await Models.change.create({
             url: pageUrl,
             diff,
-            timestamp: new Date(),
+            timestamp,
           });
         } else {
           console.log("✅ No changes for:", pageUrl);
         }
       }
+
+      await Models.crawl.create({
+        url: pageUrl,
+        data: currentSnapshot,
+        timestamp,
+      });
+
+      if (global.gc) global.gc();
     }
 
-    // Store the full object
-    await Models.crawl.create({ data: crawlDataObject });
+    if (Object.keys(allDiffs).length > 0) {
+      const reportFile = path.join(
+        reportsDir,
+        `report-${timestamp.toISOString().replace(/[:.]/g, "-")}.pdf`
+      );
 
-    console.log("✅ Saved crawl data");
+      generateConsolidatedPDFReport(allDiffs, reportFile);
+      console.log(`✅ Final PDF report saved: ${reportFile}`);
+    } else {
+      console.log("✅ No changes found. No report generated.");
+    }
 
-    // const finalDigest = digestParts.join("\n");
-    // await sendDigest(finalDigest);
+    console.log("✅ Finished monitoring all URLs.");
   } catch (error) {
     console.error("❌ Monitor failed:", error);
   }

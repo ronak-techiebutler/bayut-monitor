@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 		<!--	created with www.mysitemapgenerator.com	-->
 		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
+<!-- <url>
 	<loc>https://monitoring-tools.vercel.app/</loc>
 	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
 	<priority>1.0</priority>
-</url>
-<!-- <url>
+</url> -->
+<url>
 	<loc>https://www.bayut.com/</loc>
 	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
 	<priority>1.0</priority>
@@ -16,7 +16,7 @@
 	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
 	<priority>0.8</priority>
 </url>
-<url>
+<!-- <url>
 	<loc>https://www.bayut.com/brokers/</loc>
 	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
 	<priority>0.8</priority>
@@ -25,6 +25,236 @@
 	<loc>https://www.bayut.com/floorplans/</loc>
 	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
 	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/area-guides/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/buildings/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/schools/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/tru-estimate/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/index/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/property-market-analysis/sale/property/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/trends.html</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/new-projects/uae/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/agentportal/awards-2024/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/agentportal/awards-2023/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/uae/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.4</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-islands/coral-isle-residences/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-islands/bay-grove-residences/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-islands/haven-living/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/town-square/ayala-the-park/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubailand/ghaf-woods/capria-east/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-maritime-city/damac-seacrest/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-maritime-city/saria-tower/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-islands/whitecliffs-residences/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-islands/sunset-bay-by-imtiaz/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-islands/bay-grove-residences/bay-grove-residences-building-5/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-islands/coastal-haven/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/dubai/dubai-maritime-city/anwa-aria-by-omniyat/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/new-projects/dubai/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.6</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/yas-island/gardenia-bay/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/al-reem-island/reem-hills/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/ghantoot/ohana-by-the-sea/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/yas-island/yas-park-gate/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/saadiyat-island/saadiyat-lagoons/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/zayed-city/bloom-living/almeria/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/zayed-city/bloom-living/olvera/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/saadiyat-island/nouran-living/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/yas-island/the-sustainable-city/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/saadiyat-island/saadiyat-lagoons/ethir/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/yas-island/yas-park-views/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/abu-dhabi/yas-island/yas-golf-collection/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/barashi/hayyan/arim/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/muwaileh/al-mamsha/hamsa/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/al-sehma/masaar-2/melia/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/al-sehma/masaar-2/narenj/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/sharjah-waterfront-city/blue-pearls/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/tilal-city/masaar/sarai/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/al-tay-west/al-tay-hills/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/tilal-city/masaar/saro/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/tilal-city/masaar/sequoia/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
+</url>
+<url>
+	<loc>https://www.bayut.com/for-sale/property/sharjah/sharjah-waterfront-city/the-view-island/</loc>
+	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
+	<priority>0.1</priority>
 </url> -->
 
 </urlset>

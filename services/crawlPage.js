@@ -1,12 +1,12 @@
 import puppeteer from "puppeteer";
 
 export const crawlPage = async (url) => {
-  // const browser = await puppeteer.launch({ headless: true });
-  const browser = await puppeteer.launch({
-    executablePath: "/snap/bin/chromium",
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
+  const browser = await puppeteer.launch({ headless: true });
+  // const browser = await puppeteer.launch({
+  //   executablePath: "/snap/bin/chromium",
+  //   headless: "new",
+  //   args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  // });
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: "networkidle2" });
 
