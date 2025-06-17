@@ -18,6 +18,132 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// export const runMonitor = async (urlArray) => {
+//   try {
+//     console.log("🔄 Running monitor");
+
+//     await connectDB();
+//     const timestamp = new Date();
+//     const reportsDir = path.join(__dirname, "../reports");
+//     if (!fs.existsSync(reportsDir)) {
+//       fs.mkdirSync(reportsDir, { recursive: true });
+//     }
+
+//     const allDiffs = {};
+
+//     for (const pageUrl of urlArray) {
+//       console.log("🌐 Crawling:", pageUrl);
+
+//       const { html: newHtml, links } = await crawlPage(pageUrl);
+//       const seoFields = extractSEOFields(newHtml);
+//       const techMetrics = await getTechnicalMetrics(pageUrl);
+//       const {
+//         sitemapAvailable,
+//         sitemapUrls,
+//         sitemapStatus,
+//         robotsTxt,
+//         robotsStatus,
+//       } = await checkSitemapAndRobots();
+
+//       const currentSnapshot = {
+//         seoSnapshot: { ...seoFields },
+//         technicalMetrics: {
+//           TTFB: +(techMetrics.TTFB / 1000).toFixed(2),
+//           LCP: +(techMetrics.LCP / 1000).toFixed(2),
+//           INP: +(techMetrics.INP / 1000).toFixed(2),
+//         },
+//         sitemapAndRobots: {
+//           sitemapAvailable,
+//           sitemapStatus,
+//           sitemapUrls,
+//           robotsTxt: robotsTxt?.slice(0, 1000),
+//           robotsStatus,
+//         },
+//         internalLinks: {
+//           total: links.length,
+//         },
+//       };
+
+//       const previousCrawl = await Models.crawl
+//         .findOne({ url: pageUrl })
+//         .sort({ timestamp: -1 });
+//       const previousData = previousCrawl?.data;
+
+//       function getChangedFields(prev, curr) {
+//         const changes = {};
+//         for (const key in curr) {
+//           if (!_.isEqual(curr[key], prev?.[key])) {
+//             if (
+//               typeof curr[key] === "object" &&
+//               curr[key] !== null &&
+//               !Array.isArray(curr[key])
+//             ) {
+//               const nestedChanges = getChangedFields(
+//                 prev?.[key] || {},
+//                 curr[key]
+//               );
+//               if (Object.keys(nestedChanges).length > 0) {
+//                 changes[key] = nestedChanges;
+//               }
+//             } else {
+//               changes[key] = {
+//                 before: prev?.[key],
+//                 after: curr[key],
+//               };
+//             }
+//           }
+//         }
+//         return changes;
+//       }
+
+//       let diff = {};
+//       if (previousData) {
+//         diff = getChangedFields(previousData, currentSnapshot);
+
+//         if (Object.keys(diff).length > 0) {
+//           console.log("🔍 Changes detected for:", pageUrl);
+//           allDiffs[pageUrl] = {
+//             ...diff,
+//             fullCurrent: currentSnapshot,
+//           };
+
+//           await Models.change.create({
+//             url: pageUrl,
+//             diff,
+//             timestamp,
+//           });
+//         } else {
+//           console.log("✅ No changes for:", pageUrl);
+//         }
+//       }
+
+//       await Models.crawl.create({
+//         url: pageUrl,
+//         data: currentSnapshot,
+//         timestamp,
+//       });
+
+//       if (global.gc) global.gc();
+//     }
+
+//     if (Object.keys(allDiffs).length > 0) {
+//       const reportFile = path.join(
+//         reportsDir,
+//         `report-${timestamp.toISOString().replace(/[:.]/g, "-")}.pdf`
+//       );
+
+//       generateConsolidatedPDFReport(allDiffs, reportFile);
+//       console.log(`✅ Final PDF report saved: ${reportFile}`);
+//     } else {
+//       console.log("✅ No changes found. No report generated.");
+//     }
+
+//     console.log("✅ Finished monitoring all URLs.");
+//   } catch (error) {
+//     console.error("❌ Monitor failed:", error);
+//   }
+// };
+
 export const runMonitor = async (urlArray) => {
   try {
     console.log("🔄 Running monitor");
@@ -31,7 +157,13 @@ export const runMonitor = async (urlArray) => {
 
     const allDiffs = {};
 
-    for (const pageUrl of urlArray) {
+    const chunkArray = (arr, size) =>
+      arr.reduce(
+        (acc, _, i) => (i % size ? acc : [...acc, arr.slice(i, i + size)]),
+        []
+      );
+
+    const processSingleUrl = async (pageUrl) => {
       console.log("🌐 Crawling:", pageUrl);
 
       const { html: newHtml, links } = await crawlPage(pageUrl);
@@ -69,7 +201,7 @@ export const runMonitor = async (urlArray) => {
         .sort({ timestamp: -1 });
       const previousData = previousCrawl?.data;
 
-      function getChangedFields(prev, curr) {
+      const getChangedFields = (prev, curr) => {
         const changes = {};
         for (const key in curr) {
           if (!_.isEqual(curr[key], prev?.[key])) {
@@ -94,7 +226,7 @@ export const runMonitor = async (urlArray) => {
           }
         }
         return changes;
-      }
+      };
 
       let diff = {};
       if (previousData) {
@@ -102,7 +234,10 @@ export const runMonitor = async (urlArray) => {
 
         if (Object.keys(diff).length > 0) {
           console.log("🔍 Changes detected for:", pageUrl);
-          allDiffs[pageUrl] = diff;
+          allDiffs[pageUrl] = {
+            ...diff,
+            fullCurrent: currentSnapshot,
+          };
 
           await Models.change.create({
             url: pageUrl,
@@ -120,13 +255,31 @@ export const runMonitor = async (urlArray) => {
         timestamp,
       });
 
-      if (global.gc) global.gc();
+      // Help GC
+      return null;
+    };
+
+    const BATCH_SIZE = 10;
+    const chunks = chunkArray(urlArray, BATCH_SIZE);
+
+    for (const chunk of chunks) {
+      for (const url of chunk) {
+        await processSingleUrl(url);
+      }
+
+      if (global.gc) {
+        global.gc(); // force garbage collection
+        console.log("🧹 GC triggered after batch");
+      }
+
+      // Pause a bit to let system breathe
+      await new Promise((res) => setTimeout(res, 100));
     }
 
     if (Object.keys(allDiffs).length > 0) {
       const reportFile = path.join(
         reportsDir,
-        `report-${timestamp.toISOString().replace(/[:.]/g, "-")}.pdf`
+        `report-${timestamp.toISOString().split("T")[0]}.pdf`
       );
 
       generateConsolidatedPDFReport(allDiffs, reportFile);

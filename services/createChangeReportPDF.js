@@ -20,7 +20,7 @@ const printer = new PdfPrinter(fonts);
 export function generateConsolidatedPDFReport(diffsByUrl, outputFile) {
   const content = [];
 
-  content.push({ text: "Report", style: "header" });
+  content.push({ text: "Bayut Monitoring Report", style: "header" });
 
   for (const [url, diff] of Object.entries(diffsByUrl)) {
     content.push({
@@ -37,6 +37,7 @@ export function generateConsolidatedPDFReport(diffsByUrl, outputFile) {
       ],
     ];
 
+    // Flatten changed fields
     function flattenDiffObject(diff, prefix = "") {
       const rows = [];
 
@@ -53,12 +54,12 @@ export function generateConsolidatedPDFReport(diffsByUrl, outputFile) {
           rows.push([
             { text: fieldPath, style: "tableField" },
             {
-              text: JSON.stringify(value.before),
+              text: JSON.stringify(value.before, null, 2),
               color: "red",
               style: "tableContent",
             },
             {
-              text: JSON.stringify(value.after),
+              text: JSON.stringify(value.after, null, 2),
               color: "green",
               style: "tableContent",
             },
@@ -71,7 +72,32 @@ export function generateConsolidatedPDFReport(diffsByUrl, outputFile) {
       return rows;
     }
 
-    body.push(...flattenDiffObject(diff));
+    const diffRows = flattenDiffObject(diff);
+    if (diffRows.length > 0) {
+      body.push(...diffRows);
+    }
+
+    // Now handle unchanged fields: include message + current values
+    const sections = [
+      "seoSnapshot",
+      "technicalMetrics",
+      "sitemapAndRobots",
+      "internalLinks",
+    ];
+    for (const section of sections) {
+      if (!diff[section]) {
+        body.push([
+          { text: section, style: "tableField" },
+          {
+            text: "No change detected",
+            italics: true,
+            colSpan: 2,
+            style: "tableContent",
+          },
+          {},
+        ]);
+      }
+    }
 
     content.push({
       style: "tableExample",
@@ -80,6 +106,17 @@ export function generateConsolidatedPDFReport(diffsByUrl, outputFile) {
         body,
       },
       layout: "lightHorizontalLines",
+    });
+
+    // Also add full current snapshot data as reference (optional)
+    content.push({
+      text: "Latest Snapshot Data (for reference)",
+      style: "subheader",
+      margin: [0, 10, 0, 3],
+    });
+    content.push({
+      text: JSON.stringify(diff?.fullCurrent || {}, null, 2),
+      style: "codeBlock",
     });
   }
 
@@ -111,9 +148,23 @@ export function generateConsolidatedPDFReport(diffsByUrl, outputFile) {
       tableContent: {
         fontSize: 11,
       },
+      codeBlock: {
+        fontSize: 9,
+        font: "Roboto",
+        margin: [0, 2, 0, 10],
+      },
     },
     defaultStyle: {
       font: "Roboto",
+    },
+    footer: (currentPage, pageCount) => {
+      return {
+        text: `This is a computer-generated report - Page ${currentPage} of ${pageCount}`,
+        alignment: "right",
+        margin: [0, 0, 20, 10],
+        fontSize: 9,
+        color: "gray",
+      };
     },
   };
 

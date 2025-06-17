@@ -12,8 +12,8 @@ app.get("/", (req, res) => {
 });
 
 //Schedule to run every day at 12:00 AM UTC
-cron.schedule("10 10 4 6 *", async () => {
-  console.log("⏰ Running daily monitor at 11:40 AM UTC...");
+cron.schedule("0 0 4 6 *", async () => {
+  console.log("⏰ Running daily monitor at 12:00 AM UTC...");
   const urls = parseSitemap();
   await runMonitor(urls);
 });
