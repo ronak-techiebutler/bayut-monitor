@@ -20,6 +20,6 @@ export const getTechnicalMetrics = async (url) => {
   return {
     TTFB: audits["server-response-time"]?.numericValue,
     LCP: audits["largest-contentful-paint"]?.numericValue,
-    INP: audits["experimental-interaction-to-next-paint"]?.numericValue,
+    INP: audits["interaction-to-next-paint"]?.numericValue,
   };
 };
