@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({ message: "Bayut-monitor is good to go" });
+  res.json({ message: "Bayut-monitor is ready to go" });
 });
 
 //Schedule to run every day at 12:00 AM UTC
