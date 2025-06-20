@@ -1,17 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 		<!--	created with www.mysitemapgenerator.com	-->
 		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<!-- <url>
-	<loc>https://monitoring-tools.vercel.app/</loc>
-	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
-	<priority>1.0</priority>
-</url> -->
+
 <url>
 	<loc>https://www.bayut.com/</loc>
 	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
 	<priority>1.0</priority>
 </url>
-<!-- <url>
+<url>
 	<loc>https://www.bayut.com/mybayut/</loc>
 	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
 	<priority>0.8</priority>
@@ -255,6 +251,6 @@
 	<loc>https://www.bayut.com/for-sale/property/sharjah/sharjah-waterfront-city/the-view-island/</loc>
 	<lastmod>2025-05-28T15:04:11+01:00</lastmod>
 	<priority>0.1</priority>
-</url> -->
+</url>
 
 </urlset>

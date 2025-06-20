@@ -1,3 +1,4 @@
+import Models from "../models/index.js";
 import config from "./config.js";
 import mongoose from "mongoose";
 

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon app.js",
-    "monitor": "node services/scheduler.js"
+    "monitor": "node --max-old-space-size=4096 monitor.js"
   },
   "author": "",
   "license": "ISC",
