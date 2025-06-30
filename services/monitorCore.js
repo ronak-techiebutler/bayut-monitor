@@ -15,6 +15,7 @@ import Models from "../models/index.js";
 import { generateConsolidatedPDFReport } from "./createChangeReportPDF.js";
 import { fileURLToPath } from "url";
 import { chromium } from "playwright";
+import { v4 as uuidv4 } from "uuid";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,6 +24,8 @@ const logHeapUsage = (label) => {
   const used = process.memoryUsage().heapUsed / 1024 / 1024;
   console.log(`💾 [${label}] Heap Used: ${used.toFixed(2)} MB`);
 };
+
+const runId = uuidv4();
 
 export const runMonitor = async (urlArray) => {
   try {
@@ -52,7 +55,6 @@ export const runMonitor = async (urlArray) => {
 
     const BATCH_SIZE = 5;
     const chunks = chunkArray(urlArray, BATCH_SIZE);
-    let allDiffs = {};
 
     for (const chunk of chunks) {
       for (const pageUrl of chunk) {
@@ -134,37 +136,31 @@ export const runMonitor = async (urlArray) => {
             diff = getChangedFields(previousData, currentSnapshot);
             if (Object.keys(diff).length > 0) {
               console.log("🔍 Changes detected for:", pageUrl);
-              allDiffs[pageUrl] = {
-                ...diff,
-                fullCurrent: currentSnapshot,
-              };
-
               await Models.change.create({
                 url: pageUrl,
                 diff,
+                fullCurrent: currentSnapshot,
+                run_id: runId, // must exist in schema
                 timestamp,
               });
             } else {
               console.log("✅ No changes for:", pageUrl);
             }
           }
-          try {
-            await Models.crawl.create({
-              url: pageUrl,
-              data: currentSnapshot,
-              timestamp,
-            });
-            console.log("✅ Crawl record inserted for", pageUrl);
-          } catch (err) {
-            console.error("❌ Failed to insert crawl record:", err);
-          }
+
+          await Models.crawl.create({
+            url: pageUrl,
+            data: currentSnapshot,
+            timestamp,
+          });
+          console.log("✅ Crawl record inserted for", pageUrl);
 
           logHeapUsage(`After ${pageUrl}`);
         } catch (err) {
           console.error(`❌ Error processing ${pageUrl}:`, err);
         }
 
-        // ❌ Dereference large objects to allow GC
+        // Free memory
         html = null;
         links = null;
         seoFields = null;
@@ -173,33 +169,42 @@ export const runMonitor = async (urlArray) => {
         previousData = null;
         diff = null;
 
-        // 🧹 Trigger GC after each URL
         if (global.gc) global.gc();
       }
 
-      // 🧹 Also GC after each batch
       if (global.gc) global.gc();
       await new Promise((res) => setTimeout(res, 100));
     }
 
     await browser.close();
 
-    // ✅ Final report generation
-    if (Object.keys(allDiffs).length > 0) {
+    // ✅ Generate report from DB
+    const startOfDay = new Date(timestamp.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(timestamp.setHours(23, 59, 59, 999));
+
+    const changes = await Models.change.find({
+      run_id: runId,
+    });
+    if (changes.length > 0) {
+      const groupedByUrl = {};
+      for (const change of changes) {
+        groupedByUrl[change.url] = {
+          ...change.diff,
+          fullCurrent: change.fullCurrent,
+        };
+      }
+
       const reportFile = path.join(
         reportsDir,
         `report-${timestamp.toISOString().split("T")[0]}.pdf`
       );
-      generateConsolidatedPDFReport(allDiffs, reportFile);
+      generateConsolidatedPDFReport(groupedByUrl, reportFile);
       console.log(`✅ Final PDF report saved: ${reportFile}`);
     } else {
       console.log("✅ No changes found. No report generated.");
     }
 
-    // ♻️ Clear allDiffs
-    allDiffs = null;
     if (global.gc) global.gc();
-
     console.log("✅ Finished monitoring all URLs.");
   } catch (error) {
     console.error("❌ Monitor failed:", error);
