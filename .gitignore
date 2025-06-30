@@ -8,3 +8,5 @@ logs
 error.log
 app.log
 logs/
+
+reports
