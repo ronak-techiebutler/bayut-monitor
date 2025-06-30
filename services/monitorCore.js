@@ -33,9 +33,32 @@ export const runMonitor = async (urlArray) => {
     await connectDB();
 
     const timestamp = new Date();
-    const reportsDir = path.join(__dirname, "../reports");
-    if (!fs.existsSync(reportsDir)) {
-      fs.mkdirSync(reportsDir, { recursive: true });
+    const startOfDay = new Date(timestamp.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(timestamp.setHours(23, 59, 59, 999));
+
+    // 🆕 Get latest run_id from today, or create new one
+    let latestRun = await Models.change
+      .findOne({ timestamp: { $gte: startOfDay, $lte: endOfDay } })
+      .sort({ timestamp: -1 });
+
+    let runId = latestRun?.run_id || new mongoose.Types.ObjectId().toString();
+
+    // 🆕 Get URLs already crawled today under the same runId
+    const alreadyProcessed = await Models.crawl
+      .find({
+        url: { $in: urlArray },
+        timestamp: { $gte: startOfDay, $lte: endOfDay },
+      })
+      .distinct("url");
+
+    // 🆕 Filter remaining URLs
+    const remainingUrls = urlArray.filter(
+      (url) => !alreadyProcessed.includes(url)
+    );
+    console.log(`🔁 Total remaining URLs to crawl: ${remainingUrls.length}`);
+
+    if (!remainingUrls.length) {
+      console.log("⚠️ All URLs already processed today. Skipping crawl.");
     }
 
     const browser = await chromium.launch({
@@ -54,7 +77,7 @@ export const runMonitor = async (urlArray) => {
       );
 
     const BATCH_SIZE = 5;
-    const chunks = chunkArray(urlArray, BATCH_SIZE);
+    const chunks = chunkArray(remainingUrls, BATCH_SIZE);
 
     for (const chunk of chunks) {
       for (const pageUrl of chunk) {
@@ -175,16 +198,11 @@ export const runMonitor = async (urlArray) => {
       if (global.gc) global.gc();
       await new Promise((res) => setTimeout(res, 100));
     }
-
     await browser.close();
 
-    // ✅ Generate report from DB
-    const startOfDay = new Date(timestamp.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(timestamp.setHours(23, 59, 59, 999));
+    // ✅ Generate consolidated report for all URLs of this runId
+    const changes = await Models.change.find({ run_id: runId });
 
-    const changes = await Models.change.find({
-      run_id: runId,
-    });
     if (changes.length > 0) {
       const groupedByUrl = {};
       for (const change of changes) {
@@ -195,16 +213,16 @@ export const runMonitor = async (urlArray) => {
       }
 
       const reportFile = path.join(
-        reportsDir,
-        `report-${timestamp.toISOString().split("T")[0]}.pdf`
+        path.join(__dirname, "../reports"),
+        `report-${runId}.pdf`
       );
+
       generateConsolidatedPDFReport(groupedByUrl, reportFile);
       console.log(`✅ Final PDF report saved: ${reportFile}`);
     } else {
       console.log("✅ No changes found. No report generated.");
     }
 
-    if (global.gc) global.gc();
     console.log("✅ Finished monitoring all URLs.");
   } catch (error) {
     console.error("❌ Monitor failed:", error);
