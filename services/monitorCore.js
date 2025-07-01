@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
 import _ from "lodash";
+import mongoose from "mongoose";
 
 dotenv.config();
 
